@@ -59,7 +59,24 @@ This is a simple Python Telegram bot designed to be easily deployed on Vercel.
 
 ## Local Development (Optional)
 
-For local development, you would typically use polling instead of webhooks.
-1.  Create a `.env` file (copy from `.env.example`) and add your `TELEGRAM_BOT_TOKEN`.
-2.  You would need to modify `app/index.py` to load environment variables from `.env` (e.g., using `python-dotenv`) and to start the bot using `application.run_polling()`.
-3.  **Important:** Remember to remove or comment out the polling logic before deploying to Vercel, as Vercel uses webhooks defined in `vercel.json`.
+This bot can also be run locally for testing before deploying.
+
+1.  **Set Environment Variable:**
+    *   The bot reads the `TELEGRAM_BOT_TOKEN` from an environment variable. You can set this in your shell:
+        ```bash
+        export TELEGRAM_BOT_TOKEN="YOUR_TELEGRAM_BOT_TOKEN_HERE"
+        ```
+    *   Alternatively, create a `.env` file in the root directory (you can copy `.env.example`):
+        ```
+        TELEGRAM_BOT_TOKEN="YOUR_TELEGRAM_BOT_TOKEN_HERE"
+        ```
+        And then load it using a library like `python-dotenv` in your local execution, or ensure your local run configuration loads `.env` files. The provided `app/index.py`'s `if __name__ == "__main__":` block does not automatically load `.env` files; it expects `TELEGRAM_BOT_TOKEN` to be in the environment. You can install `python-dotenv` (`pip install python-dotenv`) and add a line like `from dotenv import load_dotenv; load_dotenv()` at the beginning of the `if __name__ == "__main__":` block in `app/index.py` if you prefer this method for local testing.
+
+2.  **Run the Bot:**
+    *   Navigate to the project directory and run the main script:
+        ```bash
+        python app/index.py
+        ```
+    *   The script will use `bot.infinity_polling()` to fetch updates directly from Telegram. You should see log messages in your console.
+
+3.  **Important:** The local development setup uses polling. Vercel uses webhooks. The `app/index.py` is already structured to support both: the `handler` function for Vercel and the `if __name__ == "__main__":` block for local polling. No code changes are needed before deploying to Vercel regarding this.
